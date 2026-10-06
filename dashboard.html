@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Deportes Ayto</title>
+   
+  </head>
+  <body>
+    
+    <nav>
+      <div>
+        <strong> Deportes Ayto</strong> | 
+        Hola, <span id="userName"></span> (<span id="userRole"></span>)
+      </div>
+      <button id="logoutBtn">Cerrar Sesión</button>
+    </nav>
+
+    <div class="container">
+      
+      <!-- ZONA DE ADMIN (Solo visible si el rol es admin) -->
+      <div id="admin-panel">
+        <h3>🔒 Panel de Administración</h3>
+        <p>Aquí podrías poner un formulario para crear nuevos espacios deportivos.</p>
+      </div>
+
+      <h2>Espacios Deportivos Disponibles</h2>
+      <div id="espacios-container">
+        Cargando espacios...
+      </div>
+
+    </div>
+
+    <script type="module" src="/src/dashboard.js"></script>
+  </body>
+</html>
+

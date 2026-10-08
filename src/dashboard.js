@@ -3,7 +3,7 @@ import "./style.css"
 
 // 1. Configuración de la API
 //const API_URL = import.meta.env.VITE_API_URL;
-const API_URL = 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL;
 // 2. Recuperar datos de la sesión del localStorage
 const token = localStorage.getItem('token');
 const rol = localStorage.getItem('rol');

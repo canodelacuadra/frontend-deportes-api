@@ -1,6 +1,6 @@
 import "./style.css"
 // Apuntamos al Backend (Puerto 3000)
-const API_URL = 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL;
 //const API_URL = import.meta.env.VITE_API_URL;
 
 const loginForm = document.getElementById('loginForm');

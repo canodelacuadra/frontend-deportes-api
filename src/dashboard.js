@@ -154,4 +154,54 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 
 // 10. Inicializar: Cargar los espacios al entrar al dashboard
 loadEspacios();
+// ==========================================
+// 11. LÓGICA DE ADMIN: CREAR ESPACIO
+// ==========================================
+// 1. Recoger los datos del formulario
+const createEspacioForm = document.getElementById('createEspacioForm');
+const createMsg = document.getElementById('createMsg');
+
+createEspacioForm.addEventListener('submit', async (e) => {
+ e.preventDefault();
+ createMsg.textContent = ''; // Limpiar mensaje
+
+ // 1. Recoger los datos del formulario
+ const nuevoEspacio = {
+   nombre: document.getElementById('espNombre').value,
+   tipo: document.getElementById('espTipo').value,
+   ubicacion: document.getElementById('espUbicacion').value,
+   capacidad_maxima: parseInt(document.getElementById('espCapacidad').value),
+   disponible: document.getElementById('espDisponible').checked ? 1 : 0 // Checkbox a 1 o 0
+ };
+
+ try {
+   // 2. Enviar a la API (Ruta protegida de Admin)
+   const response = await fetch(`${API_URL}/espacios`, {
+     method: 'POST',
+     headers: {
+       'Content-Type': 'application/json',
+       'Authorization': `Bearer ${token}` // ¡Obligatorio!
+     },
+     body: JSON.stringify(nuevoEspacio)
+   });
+
+   const data = await response.json();
+
+   // 3. Gestión de respuesta
+   if (response.ok) {
+     createMsg.textContent = `✅ ¡Espacio "${data.nombre}" creado con éxito!`;
+     createEspacioForm.reset(); // Limpiar formulario
+    
+     // 4. Recargar la lista de espacios para que aparezca la nueva tarjeta
+     loadEspacios();
+   } else {
+     createMsg.style.color = 'red';
+     createMsg.textContent = `❌ Error: ${data.error}`;
+   }
+
+ } catch (error) {
+   createMsg.style.color = 'red';
+   createMsg.textContent = 'Error de conexión';
+ }
+});
 

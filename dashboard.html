@@ -1,79 +1,109 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard - Deportes Ayto</title>
-   
-  </head>
-  <body>
-    
-    <nav>
-      <div>
-        <strong> Deportes Ayto</strong> | 
-        Hola, <span id="userName"></span> (<span id="userRole"></span>)
-      </div>
-      <button id="logoutBtn">Cerrar Sesión</button>
-    </nav>
 
-    <div class="container">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Deportes Ayto</title>
+
+</head>
+
+<body>
+
+  <nav>
+    <div>
+      <strong> Deportes Ayto</strong> |
+      Hola, <span id="userName"></span> (<span id="userRole"></span>)
+    </div>
+    <button id="logoutBtn">Cerrar Sesión</button>
+  </nav>
+
+  <div class="container">
+
+    <!-- ZONA DE ADMIN (Solo visible si el rol es admin) -->
+    <!-- ZONA DE ADMIN -->
+    <div id="admin-panel"
+      style="background: #ffeaa7; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none;">
       
-      <!-- ZONA DE ADMIN (Solo visible si el rol es admin) -->
-     <!-- ZONA DE ADMIN -->
-      <div id="admin-panel" style="background: #ffeaa7; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none;">
-        <h3 style="margin-top:0;">🔒 Panel de Administración: Crear Espacio</h3>
-        
-        <form id="createEspacioForm" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;">
-          
-          <div style="flex: 1 1 150px; display:flex; flex-direction:column;">
-            <label for="espNombre"><strong>Nombre:</strong></label>
-            <input type="text" id="espNombre" placeholder="Ej: Pista de Tenis" required style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
-          </div>
-
-          <div style="flex: 1 1 100px; display:flex; flex-direction:column;">
-            <label for="espTipo"><strong>Tipo:</strong></label>
-            <!-- Un selector es mejor que un input de texto para evitar datos sucios -->
-            <select id="espTipo" required style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
-              <option value="Piscina">Piscina</option>
-              <option value="Pádel">Pádel</option>
-              <option value="Fútbol">Fútbol</option>
-              <option value="Baloncesto">Baloncesto</option>
-              <option value="Gimnasio">Gimnasio</option>
-              <option value="Atletismo">Atletismo</option>
-                <option value="Spa">Spa</option>
-            </select>
-          </div>
-
-          <div style="flex: 1 1 150px; display:flex; flex-direction:column;">
-            <label for="espUbicacion"><strong>Ubicación:</strong></label>
-            <input type="text" id="espUbicacion" placeholder="Ej: Polideportivo Norte" required style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
-          </div>
-
-          <div style="flex: 0 1 80px; display:flex; flex-direction:column;">
-            <label for="espCapacidad"><strong>Capacidad:</strong></label>
-            <input type="number" id="espCapacidad" placeholder="Ej: 50" required style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
-          </div>
-
-          <div style="display:flex; align-items:center; padding-bottom:2px;">
-            <input type="checkbox" id="espDisponible" checked>
-            <label for="espDisponible"><strong>Disponible</strong></label>
-          </div>
-
-          <button type="submit" style="padding: 8px 15px; background: #2c3e50; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">➕ Añadir</button>
-        </form>
-        <div id="createMsg" style="color: green; font-weight: bold; margin-top: 10px;"></div>
+<!-- NUEVO ENLACE CONSERJE -->
+      <h3 style="margin-top:0;">🔒 Panel de Administración: </h3>
+      <div>
+         <a href="/conserje.html" id="conserjeLink"  style="background: #e67e22; color: white; text-decoration: none; padding: 8px 12px; border-radius: 4px; margin-right: 10px; font-size: 14px;">
+          🛂 Verificar Ticket
+        </a>
       </div>
 
+     
 
 
-      <h2>Espacios Deportivos Disponibles</h2>
-      <div id="espacios-container">
-        Cargando espacios...
-      </div>
+      <h4>Crear Espacio</h4>
+      <form id="createEspacioForm" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;">
 
+        <div style="flex: 1 1 150px; display:flex; flex-direction:column;">
+          <label for="espNombre"><strong>Nombre:</strong></label>
+          <input type="text" id="espNombre" placeholder="Ej: Pista de Tenis" required
+            style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+        </div>
+
+        <div style="flex: 1 1 100px; display:flex; flex-direction:column;">
+          <label for="espTipo"><strong>Tipo:</strong></label>
+          <!-- Un selector es mejor que un input de texto para evitar datos sucios -->
+          <select id="espTipo" required style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+            <option value="Piscina">Piscina</option>
+            <option value="Pádel">Pádel</option>
+            <option value="Fútbol">Fútbol</option>
+            <option value="Baloncesto">Baloncesto</option>
+            <option value="Gimnasio">Gimnasio</option>
+            <option value="Atletismo">Atletismo</option>
+            <option value="Spa">Spa</option>
+          </select>
+        </div>
+
+        <div style="flex: 1 1 150px; display:flex; flex-direction:column;">
+          <label for="espUbicacion"><strong>Ubicación:</strong></label>
+          <input type="text" id="espUbicacion" placeholder="Ej: Polideportivo Norte" required
+            style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+        </div>
+
+        <div style="flex: 0 1 80px; display:flex; flex-direction:column;">
+          <label for="espCapacidad"><strong>Capacidad:</strong></label>
+          <input type="number" id="espCapacidad" placeholder="Ej: 50" required
+            style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+        </div>
+
+        <div style="display:flex; align-items:center; padding-bottom:2px;">
+          <input type="checkbox" id="espDisponible" checked>
+          <label for="espDisponible"><strong>Disponible</strong></label>
+        </div>
+
+        <button type="submit"
+          style="padding: 8px 15px; background: #2c3e50; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">➕
+          Añadir</button>
+      </form>
+      <div id="createMsg" style="color: green; font-weight: bold; margin-top: 10px;"></div>
+      
     </div>
 
-    <script type="module" src="/src/dashboard.js"></script>
-  </body>
-</html>
 
+
+    <h2>Espacios Deportivos Disponibles</h2>
+    <div id="espacios-container">
+      Cargando espacios...
+    </div>
+    
+<!-- Contenedor para el Ticket QR -->
+<div id="ticket-container" style="display: none; background: white; padding: 20px; border-radius: 8px; text-align: center; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+  <h3>🎫 Tu Ticket de Acceso</h3>
+  <p>Muestra este código al conserje en la entrada</p>
+  <canvas id="qrCanvas" style="margin: 20px auto;"></canvas>
+  <button onclick="document.getElementById('ticket-container').style.display='none'" style="margin-top: 15px; padding: 8px 12px; background: #ccc; border: none; border-radius: 4px; cursor: pointer;">Cerrar Ticket</button>
+</div>
+
+
+
+  </div>
+
+  <script type="module" src="/src/dashboard.js"></script>
+</body>
+
+</html>

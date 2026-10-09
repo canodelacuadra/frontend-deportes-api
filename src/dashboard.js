@@ -1,4 +1,5 @@
 import "./style.css"
+import QRCode from 'qrcode';
 
 
 // 1. Configuración de la API
@@ -32,7 +33,7 @@ async function loadEspacios() {
       method: 'GET',
       headers: {
         // Le pasamos el token aunque GET sea público, por si acaso
-        'Authorization': `Bearer ${token}` 
+        'Authorization': `Bearer ${token}`
       }
     });
 
@@ -43,7 +44,7 @@ async function loadEspacios() {
     espacios.forEach(espacio => {
       const card = document.createElement('div');
       card.className = 'card';
-      
+
       const statusText = espacio.disponible ? 'Abierto' : 'Cerrado';
       const statusClass = espacio.disponible ? 'status' : 'status cerrado';
 
@@ -107,10 +108,10 @@ async function crearReserva(espacioId, espacioNombre) {
   // Pedimos los datos por prompt
   const fecha = prompt(`Reservar: ${espacioNombre}\n\nIntroduce la fecha (YYYY-MM-DD):`);
   if (!fecha) return; // Si cancela, paramos
-  
+
   const hora_inicio = prompt("Hora de inicio (HH:MM):", "10:00");
   if (!hora_inicio) return;
-  
+
   const hora_fin = prompt("Hora de fin (HH:MM):", "11:00");
   if (!hora_fin) return;
 
@@ -118,15 +119,15 @@ async function crearReserva(espacioId, espacioNombre) {
     // Hacemos la petición POST a la API
     const response = await fetch(`${API_URL}/reservas`, {
       method: 'POST',
-      headers: { 
+      headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` // ¡Importante! El backend saca el usuario_id de aquí
       },
-      body: JSON.stringify({ 
-        espacio_id: espacioId, 
-        fecha, 
-        hora_inicio, 
-        hora_fin 
+      body: JSON.stringify({
+        espacio_id: espacioId,
+        fecha,
+        hora_inicio,
+        hora_fin
       })
     });
 
@@ -134,7 +135,8 @@ async function crearReserva(espacioId, espacioNombre) {
 
     // Gestionamos la respuesta del Backend
     if (response.ok) {
-      alert(`✅ ¡Reserva confirmada! ID de tu reserva: ${data.id}`);
+      //alert(`✅ ¡Reserva confirmada! ID de tu reserva: ${data.id}`);
+      generarTicketQR(data.id, espacioNombre, fecha, hora_inicio);
     } else if (response.status === 409) {
       alert(`❌ Conflictos: ${data.error}`); // Doble reserva
     } else {
@@ -145,6 +147,26 @@ async function crearReserva(espacioId, espacioNombre) {
     alert('Error de conexión con el servidor');
   }
 }
+// 9. NUEVA FUNCIÓN: Generar el QR
+function generarTicketQR(reservaId, nombreEspacio, fecha, hora) {
+  const ticketContainer = document.getElementById('ticket-container');
+  const canvas = document.getElementById('qrCanvas');
+  // La URL que tendrá el QR. Apunta al endpoint de verificación del backend.
+  // Cuando el conserje lo escanee, su navegador irá a esta URL.Esta es la url que codifica el codigoqr
+  const urlVerificacion = `${API_URL}/reservas/verificar/${reservaId}`;
+
+  // Generar el QR en el canvas
+  QRCode.toCanvas(canvas, urlVerificacion, { width: 200 }, function (error) {
+    if (error) console.error(error);
+
+    // Mostrar el ticket
+    ticketContainer.style.display = 'block';
+
+    // Opcional: Scroll suave hacia el ticket
+    ticketContainer.scrollIntoView({ behavior: 'smooth' });
+  });
+}
+
 
 // 9. Cerrar Sesión
 document.getElementById('logoutBtn').addEventListener('click', () => {
@@ -162,46 +184,46 @@ const createEspacioForm = document.getElementById('createEspacioForm');
 const createMsg = document.getElementById('createMsg');
 
 createEspacioForm.addEventListener('submit', async (e) => {
- e.preventDefault();
- createMsg.textContent = ''; // Limpiar mensaje
+  e.preventDefault();
+  createMsg.textContent = ''; // Limpiar mensaje
 
- // 1. Recoger los datos del formulario
- const nuevoEspacio = {
-   nombre: document.getElementById('espNombre').value,
-   tipo: document.getElementById('espTipo').value,
-   ubicacion: document.getElementById('espUbicacion').value,
-   capacidad_maxima: parseInt(document.getElementById('espCapacidad').value),
-   disponible: document.getElementById('espDisponible').checked ? 1 : 0 // Checkbox a 1 o 0
- };
+  // 1. Recoger los datos del formulario
+  const nuevoEspacio = {
+    nombre: document.getElementById('espNombre').value,
+    tipo: document.getElementById('espTipo').value,
+    ubicacion: document.getElementById('espUbicacion').value,
+    capacidad_maxima: parseInt(document.getElementById('espCapacidad').value),
+    disponible: document.getElementById('espDisponible').checked ? 1 : 0 // Checkbox a 1 o 0
+  };
 
- try {
-   // 2. Enviar a la API (Ruta protegida de Admin)
-   const response = await fetch(`${API_URL}/espacios`, {
-     method: 'POST',
-     headers: {
-       'Content-Type': 'application/json',
-       'Authorization': `Bearer ${token}` // ¡Obligatorio!
-     },
-     body: JSON.stringify(nuevoEspacio)
-   });
+  try {
+    // 2. Enviar a la API (Ruta protegida de Admin)
+    const response = await fetch(`${API_URL}/espacios`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ¡Obligatorio!
+      },
+      body: JSON.stringify(nuevoEspacio)
+    });
 
-   const data = await response.json();
+    const data = await response.json();
 
-   // 3. Gestión de respuesta
-   if (response.ok) {
-     createMsg.textContent = `✅ ¡Espacio "${data.nombre}" creado con éxito!`;
-     createEspacioForm.reset(); // Limpiar formulario
-    
-     // 4. Recargar la lista de espacios para que aparezca la nueva tarjeta
-     loadEspacios();
-   } else {
-     createMsg.style.color = 'red';
-     createMsg.textContent = `❌ Error: ${data.error}`;
-   }
+    // 3. Gestión de respuesta
+    if (response.ok) {
+      createMsg.textContent = `✅ ¡Espacio "${data.nombre}" creado con éxito!`;
+      createEspacioForm.reset(); // Limpiar formulario
 
- } catch (error) {
-   createMsg.style.color = 'red';
-   createMsg.textContent = 'Error de conexión';
- }
+      // 4. Recargar la lista de espacios para que aparezca la nueva tarjeta
+      loadEspacios();
+    } else {
+      createMsg.style.color = 'red';
+      createMsg.textContent = `❌ Error: ${data.error}`;
+    }
+
+  } catch (error) {
+    createMsg.style.color = 'red';
+    createMsg.textContent = 'Error de conexión';
+  }
 });
 

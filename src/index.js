@@ -1,6 +1,5 @@
 import "./style.css"
 const API_URL = import.meta.env.VITE_API_URL;
-
 const container = document.getElementById('espacios-container');
 
 async function loadEspaciosPublicos() {
